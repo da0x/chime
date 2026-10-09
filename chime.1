@@ -1,0 +1,108 @@
+.\" chime(1)
+.\" Copyright (C) 2026 Daher Alfawares
+.\" SPDX-License-Identifier: GPL-3.0-or-later
+.TH CHIME 1 2026-10-09 "chime 0.1.0" "User Commands"
+.SH NAME
+chime \- run a command, and chime when it ends
+.SH SYNOPSIS
+.B chime
+.RB [ \-\-name
+.IR job ]
+.I command
+.RI [ argument ...]
+.br
+.B chime
+.RB [ \-\-error ]
+.RB [ \-\-message
+.IR text ]
+.SH DESCRIPTION
+.B chime
+runs
+.IR command ,
+waits for it to end, and then chimes: the desktop's
+.I complete
+sound when the command succeeded, its
+.I dialog\-error
+sound when it didn't. It also rings the terminal's bell and shows a desktop
+notification saying how the command ended and how long it took, such as
+.RI \(lq "make \-j16 finished" "\(rq with \(lq" "in 4m10s" \(rq.
+.PP
+It exits with the command's own status, so it can be put in front of any command
+in a script or an
+.B &&
+chain without changing what happens next.
+.PP
+Ctrl\-C reaches the command, not
+.BR chime ,
+which still reports how the command ended.
+.PP
+Without a command,
+.B chime
+chimes at once, which is useful at the end of a script.
+.SH OPTIONS
+.TP
+.BI \-\-name " job"
+Name the job in the notification, so it reads
+.RI \(lq "Deploy finished" \(rq
+or
+.RI \(lq "Deploy failed with 1" \(rq
+instead of naming the command.
+.TP
+.BI \-\-message " text"
+When chiming at once, what the notification says. Given a command, it names the
+job, as
+.B \-\-name
+does.
+.TP
+.B \-\-error
+When chiming at once, chime the error sound.
+.TP
+.B \-\-
+The command starts after this, even if it starts with a dash.
+.TP
+.BR \-h ", " \-\-help
+Show a summary of the options.
+.TP
+.B \-\-version
+Show the version.
+.SH EXIT STATUS
+The command's own exit status. When it was stopped by a signal, 128 plus the
+signal's number, as a shell reports it. 127 when the command can't be found, 126
+when it can't be run, and 2 for an option
+.B chime
+doesn't know.
+.SH SOUNDS AND NOTIFICATIONS
+The sound comes from the first of these that works:
+.BR canberra\-gtk\-play (1)
+playing the desktop's sound theme; the freedesktop sound theme's file played with
+.BR pw\-play (1),
+.BR paplay (1)
+or
+.BR aplay (1);
+and its bell. The notification is sent with
+.BR notify\-send (1).
+All of these are optional. Each is given a second, so a stalled audio server or
+notification daemon never holds
+.B chime
+up, and none of them failing changes its exit status.
+.SH EXAMPLES
+.TP
+.B chime make \-j16
+Build, and chime when the build is done.
+.TP
+.B chime \-\-name """Backup""" rsync \-a ~/ /mnt/backup/
+Back up, and get
+.RI \(lq "Backup finished" \(rq.
+.TP
+.B make && chime \-\-message """Built""" || chime \-\-error \-\-message """Build failed"""
+Chime from a script.
+.SH SEE ALSO
+.BR notify\-send (1),
+.BR canberra\-gtk\-play (1),
+.BR pw\-play (1)
+.SH AUTHOR
+Daher Alfawares
+.SH COPYRIGHT
+Copyright \(co 2026 Daher Alfawares. License GPLv3+: GNU GPL version 3 or later
+<https://gnu.org/licenses/gpl.html>. This is free software: you are free to change
+and redistribute it. There is NO WARRANTY, to the extent permitted by law.
