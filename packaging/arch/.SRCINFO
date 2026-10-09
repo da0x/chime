@@ -1,0 +1,21 @@
+pkgbase = chime
+	pkgdesc = Run a command, and chime when it ends
+	pkgver = 0.1.0
+	pkgrel = 1
+	url = https://github.com/da0x/chime
+	arch = x86_64
+	arch = aarch64
+	license = GPL-3.0-or-later
+	makedepends = cmake
+	depends = glibc
+	depends = gcc-libs
+	optdepends = libcanberra: play the desktop sound theme
+	optdepends = sound-theme-freedesktop: the complete and error sounds
+	optdepends = pipewire: play sounds with pw-play
+	optdepends = libpulse: play sounds with paplay
+	optdepends = alsa-utils: play sounds with aplay
+	optdepends = libnotify: desktop notifications
+	source = chime-0.1.0.tar.gz::https://github.com/da0x/chime/archive/refs/tags/v0.1.0.tar.gz
+	sha256sums = 2aa5c6e95365918b2776a6865350ca877936e5b6c131ec4ac856912fe9d3db01
+
+pkgname = chime

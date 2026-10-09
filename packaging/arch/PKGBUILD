@@ -1,0 +1,36 @@
+# Maintainer: Daher Alfawares <3171199+da0x@users.noreply.github.com>
+
+pkgname=chime
+pkgver=0.1.0
+pkgrel=1
+pkgdesc='Run a command, and chime when it ends'
+arch=('x86_64' 'aarch64')
+url='https://github.com/da0x/chime'
+license=('GPL-3.0-or-later')
+depends=('glibc' 'gcc-libs')
+makedepends=('cmake')
+optdepends=(
+  'libcanberra: play the desktop sound theme'
+  'sound-theme-freedesktop: the complete and error sounds'
+  'pipewire: play sounds with pw-play'
+  'libpulse: play sounds with paplay'
+  'alsa-utils: play sounds with aplay'
+  'libnotify: desktop notifications'
+)
+source=("$pkgname-$pkgver.tar.gz::$url/archive/refs/tags/v$pkgver.tar.gz")
+sha256sums=('2aa5c6e95365918b2776a6865350ca877936e5b6c131ec4ac856912fe9d3db01')
+
+build() {
+  cmake -S "$pkgname-$pkgver" -B build \
+    -DCMAKE_BUILD_TYPE=None \
+    -DCMAKE_INSTALL_PREFIX=/usr
+  cmake --build build
+}
+
+check() {
+  ctest --test-dir build --output-on-failure
+}
+
+package() {
+  DESTDIR="$pkgdir" cmake --install build
+}
